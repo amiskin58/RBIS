@@ -1,8 +1,9 @@
 type ActionPanelProps = {
   onBall: () => void;
+  onStrike: () => void;
 };
 
-function ActionPanel({ onBall }: ActionPanelProps) {
+function ActionPanel({ onBall, onStrike }: ActionPanelProps) {
   return (
     <div
       style={{
@@ -24,6 +25,17 @@ function ActionPanel({ onBall }: ActionPanelProps) {
         }}
       >
         Ball
+      </button>
+      <button
+        onClick={onStrike}
+        style={{
+          width: "120px",
+          height: "50px",
+          fontSize: "18px",
+          cursor: "pointer",
+        }}
+      >
+        Strike
       </button>
     </div>
   );

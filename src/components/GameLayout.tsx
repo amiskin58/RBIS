@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { addBall } from "../engine/PitchEngine";
+import { addBall , addStrike } from "../engine/PitchEngine";
 import TopScoreBoard from "./TopScoreBoard";
 import BaseballField from "./BaseballField";
 import SidePanel from "./SidePanel";
@@ -26,6 +26,11 @@ function GameLayout() {
   const handleBall = () => {
     setGame((prev) => addBall(prev));
   };
+  const handleStrike = () => {
+    setGame((prev) => addStrike(prev));
+  };
+
+
   return (
     <div
       style={{
@@ -52,12 +57,18 @@ function GameLayout() {
 
         <SidePanel
           balls={game.balls}
-          lastPlay={game.lastPlay}
+          strikes={game.strikes}
+          outs={game.outs}
+          pitchCount={game.pitchCount}
+          history={game.history}
         />
       </div>
 
       {/* 下方操作區 */}
-      <ActionPanel onBall={handleBall} />
+      <ActionPanel 
+        onBall={handleBall}
+        onStrike={handleStrike}
+       />
     </div>
   );
 }

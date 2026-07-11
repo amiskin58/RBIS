@@ -1,6 +1,11 @@
+import type { PlayEvent } from "../models/PlayEvent";
+
 type SidePanelProps = {
   balls: number;
-  lastPlay: string[];
+  strikes: number;
+  outs: number;
+  pitchCount: number;
+  history: PlayEvent[];
 };
 
 type DotProps = {
@@ -64,7 +69,10 @@ function Row({
 
 function SidePanel({
   balls,
-  lastPlay,
+  history,
+  outs,
+  pitchCount,
+  strikes,
 }: SidePanelProps) {
   return (
     <div
@@ -101,13 +109,13 @@ function SidePanel({
       </Row>
 
       <Row label="S" color="#f1c40f">
-        <Dot active={false} color="#f1c40f" />
-        <Dot active={false} color="#f1c40f" />
+        <Dot active={strikes >= 1} color="#f1c40f" />
+        <Dot active={strikes >= 2} color="#f1c40f" />
       </Row>
 
       <Row label="O" color="#e53935">
-        <Dot active={false} color="#e53935" />
-        <Dot active={false} color="#e53935" />
+        <Dot active={outs >= 1} color="#e53935" />
+        <Dot active={outs >= 2} color="#e53935" />
       </Row>
 
       <hr />
@@ -127,7 +135,7 @@ function SidePanel({
         <span>1▲</span>
 
         <strong>PITCH</strong>
-        <span>0</span>
+        <span>{pitchCount}</span>
       </div>
 
       <hr />
@@ -171,12 +179,12 @@ function SidePanel({
           LAST PLAY
         </strong>
 
-        {lastPlay.length === 0 ? (
+        {history.length === 0 ? (
           <span style={{ color: "#999" }}>
             No Play
           </span>
         ) : (
-          lastPlay.map((play, index) => (
+          history.map((play, index) => (
             <div
               key={index}
               style={{
@@ -185,7 +193,7 @@ function SidePanel({
                 fontSize: "15px",
               }}
             >
-              {index + 1}. {play}
+              {index + 1}. {play.text}
             </div>
           ))
         )}

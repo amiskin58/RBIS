@@ -44,3 +44,44 @@ export function addBall(game: GameState): GameState {
     ].slice(0, 20),
   };
 }
+export function addStrike(game: GameState): GameState {
+  // 第三好球
+  if (game.strikes >= 2) {
+    return {
+      ...game,
+
+      balls: 0,
+      strikes: 0,
+      outs: game.outs + 1,
+
+      pitchCount: game.pitchCount + 1,
+
+      history: [
+        createPlayEvent(
+          PlayType.K,
+          "Strike Out",
+          game
+        ),
+        ...game.history,
+      ].slice(0, 20),
+    };
+  }
+
+  // 一般好球
+  return {
+    ...game,
+
+    strikes: game.strikes + 1,
+
+    pitchCount: game.pitchCount + 1,
+
+    history: [
+      createPlayEvent(
+        PlayType.CALLED_STRIKE,
+        "Called Strike",
+        game
+      ),
+      ...game.history,
+    ].slice(0, 20),
+  };
+}
