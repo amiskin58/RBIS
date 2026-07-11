@@ -46,26 +46,32 @@ export function addBall(game: GameState): GameState {
 }
 export function addStrike(game: GameState): GameState {
   // 第三好球
-  if (game.strikes >= 2) {
-    return {
-      ...game,
+if (game.strikes >= 2) {
+  const nextGame = {
+    ...game,
 
-      balls: 0,
-      strikes: 0,
-      outs: game.outs + 1,
+    balls: 0,
+    strikes: 0,
+    outs: game.outs + 1,
 
-      pitchCount: game.pitchCount + 1,
+    pitchCount: game.pitchCount + 1,
 
-      history: [
-        createPlayEvent(
-          PlayType.K,
-          "Strike Out",
-          game
-        ),
-        ...game.history,
-      ].slice(0, 20),
-    };
+    history: [
+      createPlayEvent(
+        PlayType.K,
+        "Strike Out",
+        game
+      ),
+      ...game.history,
+    ].slice(0, 20),
+  };
+
+  if (nextGame.outs >= 3) {
+    return changeSide(nextGame);
   }
+
+  return nextGame;
+}
 
   // 一般好球
   return {
@@ -83,5 +89,22 @@ export function addStrike(game: GameState): GameState {
       ),
       ...game.history,
     ].slice(0, 20),
+  };
+}
+//負責換局的函式
+function changeSide(game: GameState): GameState {
+  return {
+    ...game,
+
+    balls: 0,
+    strikes: 0,
+    outs: 0,
+
+    isTop: !game.isTop,
+
+    inning:
+      game.isTop
+        ? game.inning
+        : game.inning + 1,
   };
 }

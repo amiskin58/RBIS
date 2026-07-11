@@ -4,6 +4,8 @@ type SidePanelProps = {
   balls: number;
   strikes: number;
   outs: number;
+  inning: number;
+  isTop: boolean;
   pitchCount: number;
   history: PlayEvent[];
 };
@@ -71,6 +73,8 @@ function SidePanel({
   balls,
   history,
   outs,
+  inning,
+  isTop,
   pitchCount,
   strikes,
 }: SidePanelProps) {
@@ -132,7 +136,10 @@ function SidePanel({
         }}
       >
         <strong>INNING</strong>
-        <span>1▲</span>
+        <span>
+          {inning}
+          {isTop ? "▲" : "▼"}
+        </span>
 
         <strong>PITCH</strong>
         <span>{pitchCount}</span>

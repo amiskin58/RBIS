@@ -59,6 +59,8 @@ function GameLayout() {
           balls={game.balls}
           strikes={game.strikes}
           outs={game.outs}
+          inning={game.inning}
+          isTop={game.isTop}
           pitchCount={game.pitchCount}
           history={game.history}
         />
