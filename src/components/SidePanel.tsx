@@ -19,8 +19,8 @@ function Dot({ active, color }: DotProps) {
   return (
     <div
       style={{
-        width: 18,
-        height: 18,
+        width: 12,
+        height: 12,
         borderRadius: "50%",
         background: active ? color : "#d9d9d9",
         border: "1px solid #888",
@@ -50,7 +50,7 @@ function Row({
       <div
         style={{
           fontWeight: "bold",
-          fontSize: "22px",
+          fontSize: "18px",
           color,
         }}
       >
@@ -78,6 +78,13 @@ function SidePanel({
   pitchCount,
   strikes,
 }: SidePanelProps) {
+  const currentHistory = history.filter(
+    (play) =>
+      play.inning === inning &&
+      play.isTop === isTop
+  );
+
+
   return (
     <div
       style={{
@@ -91,16 +98,6 @@ function SidePanel({
       }}
     >
       {/* ================= BSO ================= */}
-
-      <h2
-        style={{
-          textAlign: "center",
-          marginTop: 0,
-          marginBottom: 20,
-        }}
-      >
-        BSO
-      </h2>
 
       <Row label="B" color="#2ecc71">
         {[1, 2, 3].map((n) => (
@@ -122,17 +119,18 @@ function SidePanel({
         <Dot active={outs >= 2} color="#e53935" />
       </Row>
 
-      <hr />
 
       {/* ================= GAME ================= */}
 
       <div
         style={{
           display: "grid",
-          gridTemplateColumns: "90px 1fr",
-          rowGap: "10px",
-          fontSize: "17px",
+          gridTemplateColumns: "80px 1fr",
+          rowGap: "8px",
+          columnGap: "10px",
+          fontSize: "15px",
           marginBottom: "15px",
+          textAlign: "left",
         }}
       >
         <strong>INNING</strong>
@@ -143,40 +141,31 @@ function SidePanel({
 
         <strong>PITCH</strong>
         <span>{pitchCount}</span>
-      </div>
 
-      <hr />
-
-      {/* ================= PLAYER ================= */}
-
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "90px 1fr",
-          rowGap: "10px",
-          fontSize: "17px",
-          marginBottom: "15px",
-        }}
-      >
         <strong>BATTER</strong>
         <span>#23 王小明</span>
 
         <strong>PITCHER</strong>
         <span>#18 林志強</span>
+       
       </div>
 
       <hr />
 
       {/* ================= LAST PLAY ================= */}
 
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          flex: 1,
-          overflowY: "auto",
-        }}
-      >
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        height: "220px",
+        overflowY: "auto",
+        border: "1px solid #ddd",
+        borderRadius: "6px",
+        padding: "8px",
+        boxSizing: "border-box",
+      }}
+    >
         <strong
           style={{
             marginBottom: "10px",
@@ -186,22 +175,38 @@ function SidePanel({
           LAST PLAY
         </strong>
 
-        {history.length === 0 ? (
+        {currentHistory.length === 0 ? (
           <span style={{ color: "#999" }}>
             No Play
           </span>
         ) : (
-          history.map((play, index) => (
-            <div
-              key={index}
+          currentHistory.map((play, index) => (
+          <div
+            key={index}
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "12px",
+              padding: "6px 0",
+              borderBottom: "1px solid #eee",
+              fontSize: "15px",
+              fontFamily: "monospace",
+            }}
+          >
+            <span
               style={{
-                padding: "6px 0",
-                borderBottom: "1px solid #eee",
-                fontSize: "15px",
+                width: "36px",
+                textAlign: "right",
+                fontWeight: 600,
               }}
             >
-              {index + 1}. {play.text}
-            </div>
+              {String(play.pitch).padStart(3, "0")}
+            </span>
+
+            <span>
+              {play.text}
+            </span>
+          </div>
           ))
         )}
       </div>

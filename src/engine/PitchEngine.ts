@@ -1,12 +1,23 @@
 import type { GameState } from "../state/GameState";
 import { PlayType, createPlayEvent } from "../models/PlayEvent";
+import { walkAdvance } from "./BaseRunner";
 
 export function addBall(game: GameState): GameState {
   // 第四壞球
   if (game.balls >= 3) {
+
+    const result = walkAdvance(
+      game.bases,
+      game.batter!
+    );
     return {
       ...game,
-
+      bases: result.bases,
+      ...(result.score > 0
+      ? game.isTop
+        ? { awayScore: game.awayScore + result.score }
+        : { homeScore: game.homeScore + result.score }
+      : {}),
       // 下一位打者
       balls: 0,
       strikes: 0,
@@ -108,9 +119,14 @@ function changeSide(game: GameState): GameState {
 
     isTop: !game.isTop,
 
-    inning:
-      game.isTop
-        ? game.inning
-        : game.inning + 1,
+    inning: game.isTop
+      ? game.inning
+      : game.inning + 1,
+
+    bases: {
+      first: null,
+      second: null,
+      third: null,
+    },
   };
 }

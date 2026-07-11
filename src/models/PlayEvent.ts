@@ -23,6 +23,7 @@ export const PlayType = {
   PICKOFF: "PICKOFF",
 
   RUN: "RUN",
+  SINGLE: "SINGLE",
 } as const;
 
 export type PlayType =
@@ -42,6 +43,11 @@ export interface PlayEvent {
   text: string;
 
   time: Date;
+
+  location?: {
+    x: number;
+    y: number;
+  };
 }
  export function createPlayEvent(
   type: PlayType,
