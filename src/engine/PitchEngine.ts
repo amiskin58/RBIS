@@ -12,7 +12,9 @@ export function addBall(game: GameState): GameState {
       strikes: 0,
 
       // 投球數+1
-      pitchCount: game.pitchCount + 1,
+      ...(game.isTop
+        ? { homePitchCount: game.homePitchCount + 1 }
+        : { awayPitchCount: game.awayPitchCount + 1 }),
 
       // Last Play
       history: [
@@ -32,7 +34,9 @@ export function addBall(game: GameState): GameState {
 
     balls: game.balls + 1,
 
-    pitchCount: game.pitchCount + 1,
+    ...(game.isTop
+      ? { homePitchCount: game.homePitchCount + 1 }
+      : { awayPitchCount: game.awayPitchCount + 1 }),
 
     history: [
       createPlayEvent(
@@ -53,8 +57,9 @@ if (game.strikes >= 2) {
     balls: 0,
     strikes: 0,
     outs: game.outs + 1,
-
-    pitchCount: game.pitchCount + 1,
+    ...(game.isTop
+      ? { homePitchCount: game.homePitchCount + 1 }
+      : { awayPitchCount: game.awayPitchCount + 1 }),
 
     history: [
       createPlayEvent(
@@ -78,8 +83,9 @@ if (game.strikes >= 2) {
     ...game,
 
     strikes: game.strikes + 1,
-
-    pitchCount: game.pitchCount + 1,
+    ...(game.isTop
+      ? { homePitchCount: game.homePitchCount + 1 }
+      : { awayPitchCount: game.awayPitchCount + 1 }),
 
     history: [
       createPlayEvent(

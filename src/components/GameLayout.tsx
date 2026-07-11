@@ -61,7 +61,11 @@ function GameLayout() {
           outs={game.outs}
           inning={game.inning}
           isTop={game.isTop}
-          pitchCount={game.pitchCount}
+          pitchCount={
+            game.isTop
+              ? game.homePitchCount
+              : game.awayPitchCount
+          }
           history={game.history}
         />
       </div>

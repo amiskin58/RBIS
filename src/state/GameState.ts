@@ -1,4 +1,5 @@
 import type { PlayEvent } from "../models/PlayEvent";
+//import type { Team } from "../models/Team";
 
 export interface Player {
   id: number;
@@ -23,11 +24,14 @@ export interface GameState {
   isTop: boolean;
 
   // 投球數
-  pitchCount: number;
+  homePitchCount: number;
+  awayPitchCount: number;
 
-  // 比分
+  // 比分（舊）
   homeScore: number;
   awayScore: number;
+
+
 
   // 球員
   batter: Player | null;
@@ -48,8 +52,8 @@ export const initialGameState: GameState = {
   inning: 1,
   isTop: true,
 
-  pitchCount: 0,
-
+  homePitchCount: 0,
+  awayPitchCount: 0,
   homeScore: 0,
   awayScore: 0,
 
@@ -58,7 +62,7 @@ export const initialGameState: GameState = {
     number: 23,
     name: "王小明",
   },
-
+// 先保留（之後再移除）
   pitcher: {
     id: 18,
     number: 18,

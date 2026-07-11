@@ -43,28 +43,32 @@ export interface PlayEvent {
 
   time: Date;
 }
-  export function createPlayEvent(
-    type: PlayType,
-    text: string,
-    game: {
-      pitchCount: number;
-      inning: number;
-      isTop: boolean;
-    }
-  ): PlayEvent {
-    return {
-      id: Date.now(),
-
-      pitch: game.pitchCount + 1,
-
-      inning: game.inning,
-
-      isTop: game.isTop,
-
-      type,
-
-      text,
-
-      time: new Date(),
-    };
+ export function createPlayEvent(
+  type: PlayType,
+  text: string,
+  game: {
+    homePitchCount: number;
+    awayPitchCount: number;
+    inning: number;
+    isTop: boolean;
   }
+): PlayEvent {
+  return {
+    id: Date.now(),
+
+    pitch:
+      (game.isTop
+        ? game.homePitchCount
+        : game.awayPitchCount) + 1,
+
+    inning: game.inning,
+
+    isTop: game.isTop,
+
+    type,
+
+    text,
+
+    time: new Date(),
+  };
+}
