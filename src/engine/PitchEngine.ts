@@ -1,4 +1,5 @@
 import type { GameState } from "../state/GameState";
+import { PlayType, createPlayEvent } from "../models/PlayEvent";
 
 export function addBall(game: GameState): GameState {
   // 第四壞球
@@ -14,9 +15,13 @@ export function addBall(game: GameState): GameState {
       pitchCount: game.pitchCount + 1,
 
       // Last Play
-      lastPlay: [
-        "BB",
-        ...game.lastPlay,
+      history: [
+        createPlayEvent(
+          PlayType.BB,
+          "BB",
+          game
+        ),
+        ...game.history,
       ].slice(0, 20),
     };
   }
@@ -29,9 +34,13 @@ export function addBall(game: GameState): GameState {
 
     pitchCount: game.pitchCount + 1,
 
-    lastPlay: [
-      "Ball",
-      ...game.lastPlay,
+    history: [
+      createPlayEvent(
+        PlayType.BALL,
+        "Ball",
+        game
+      ),
+      ...game.history,
     ].slice(0, 20),
   };
 }

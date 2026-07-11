@@ -37,7 +37,7 @@ export interface GameState {
   bases: Bases;
 
   // Last Play
- lastPlay: PlayEvent[];
+ history: PlayEvent[];
 }
 
 export const initialGameState: GameState = {
@@ -71,5 +71,5 @@ export const initialGameState: GameState = {
     third: null,
   },
 
-  lastPlay: [],
+  history: [],
 };
