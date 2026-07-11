@@ -1,14 +1,7 @@
-import ScoreBoard from "../components/ScoreBoard";
-import BaseballField from "../components/BaseballField";
+import GameLayout from "../components/GameLayout";
 
 function Home() {
-  return (
-    <div style={{ padding: "20px" }}>
-      <ScoreBoard />
-      <br />
-      <BaseballField />
-    </div>
-  );
+  return <GameLayout />;
 }
 
 export default Home;
