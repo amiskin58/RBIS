@@ -133,3 +133,18 @@ Team 可以新增、刪除。
 Roster 每個球季重新建立。
 
 Lineup 每場比賽重新建立。
+
+
+## Player Registration（球員登錄）
+
+球員可參加多個不同賽事。
+
+但在同一個 Tournament 中，僅能登錄於一支球隊。
+
+系統須自動檢查並禁止重複登錄。
+
+Player 永遠存在。
+
+Team Membership 可變動。
+
+Tournament Registration 決定球員於該賽事所屬球隊。
