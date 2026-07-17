@@ -1,4 +1,15 @@
 import type { ReactNode } from "react";
+import NavigationBar from "./NavigationBar";
+import { COLORS } from "../../constants/Theme";
+import {
+  HEADER_HEIGHT,
+  FOOTER_HEIGHT,
+} from "../../constants/Layout";
+import {
+  APP_NAME,
+  APP_VERSION,
+  COPYRIGHT,
+} from "../../constants/App";
 
 interface MainLayoutProps {
   children: ReactNode;
@@ -15,18 +26,20 @@ function MainLayout({ children }: MainLayoutProps) {
     >
       <header
         style={{
-          height: "60px",
+          height: HEADER_HEIGHT,
           display: "flex",
           alignItems: "center",
           padding: "0 20px",
-          backgroundColor: "#0b5cab",
-          color: "#ffffff",
+          backgroundColor: COLORS.primary,
+          color: COLORS.primaryText,
           fontSize: "22px",
           fontWeight: 700,
         }}
       >
-        RBIS Score
+         {APP_NAME} {APP_VERSION}
       </header>
+      
+      <NavigationBar />
 
       <main
         style={{
@@ -40,16 +53,16 @@ function MainLayout({ children }: MainLayoutProps) {
 
       <footer
         style={{
-          height: "40px",
+          height: FOOTER_HEIGHT,
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
           backgroundColor: "#222222",
-          color: "#ffffff",
+          color: COLORS.primaryText,
           fontSize: "14px",
         }}
       >
-        RBIS Baseball Information System
+         {COPYRIGHT}
       </footer>
     </div>
   );
