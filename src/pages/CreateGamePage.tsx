@@ -12,26 +12,63 @@ import TextInput from "../components/form/TextInput";
 
 import PageContainer from "../components/layout/PageContainer";
 
+import type {
+  Innings,
+  YesNoOption,
+} from "../types/GameSettings";
+
+import { DEFAULT_GAME_SETTINGS } from "../constants/gameSettings";
+
 function CreateGamePage() {
-  const [homeTeam, setHomeTeam] = useState("");
-  const [awayTeam, setAwayTeam] = useState("");
-  const [innings, setInnings] = useState("7");
-  const [gameTime, setGameTime] = useState("60");
-  const [mercyRule, setMercyRule] = useState("10");
-  const [homeDh, setHomeDh] = useState("yes");
-  const [awayDh, setAwayDh] = useState("yes");
-  const [allowExtraInnings, setAllowExtraInnings] =
-    useState("no");
+  const [homeTeam, setHomeTeam] = useState(
+    DEFAULT_GAME_SETTINGS.homeTeam
+  );
+
+  const [awayTeam, setAwayTeam] = useState(
+    DEFAULT_GAME_SETTINGS.awayTeam
+  );
+
+  const [innings, setInnings] =
+    useState<Innings>(
+      DEFAULT_GAME_SETTINGS.innings
+    );
+
+  const [gameTime, setGameTime] = useState(
+    DEFAULT_GAME_SETTINGS.gameTime
+  );
+
+  const [mercyRule, setMercyRule] = useState(
+    DEFAULT_GAME_SETTINGS.mercyRule
+  );
+
+  const [homeDh, setHomeDh] =
+    useState<YesNoOption>(
+      DEFAULT_GAME_SETTINGS.homeDh
+    );
+
+  const [awayDh, setAwayDh] =
+    useState<YesNoOption>(
+      DEFAULT_GAME_SETTINGS.awayDh
+    );
+
+  const [
+    allowExtraInnings,
+    setAllowExtraInnings,
+  ] = useState<YesNoOption>(
+    DEFAULT_GAME_SETTINGS.allowExtraInnings
+  );
 
   const handleClear = () => {
-    setHomeTeam("");
-    setAwayTeam("");
-    setInnings("7");
-    setGameTime("60");
-    setMercyRule("10");
-    setHomeDh("yes");
-    setAwayDh("yes");
-    setAllowExtraInnings("no");
+    setHomeTeam(DEFAULT_GAME_SETTINGS.homeTeam);
+    setAwayTeam(DEFAULT_GAME_SETTINGS.awayTeam);
+    setInnings(DEFAULT_GAME_SETTINGS.innings);
+    setGameTime(DEFAULT_GAME_SETTINGS.gameTime);
+    setMercyRule(DEFAULT_GAME_SETTINGS.mercyRule);
+    setHomeDh(DEFAULT_GAME_SETTINGS.homeDh);
+    setAwayDh(DEFAULT_GAME_SETTINGS.awayDh);
+    setAllowExtraInnings(
+      DEFAULT_GAME_SETTINGS.allowExtraInnings
+    );
   };
 
   const handleCreateGame = () => {
@@ -93,7 +130,7 @@ function CreateGamePage() {
           <SelectInput
             value={innings}
             onChange={(event) =>
-              setInnings(event.target.value)
+              setInnings(event.target.value as Innings)
             }
           >
             <option value="5">5 局</option>
@@ -137,7 +174,7 @@ function CreateGamePage() {
           <SelectInput
             value={homeDh}
             onChange={(event) =>
-              setHomeDh(event.target.value)
+              setHomeDh(event.target.value as YesNoOption)
             }
           >
             <option value="yes">是</option>
@@ -152,7 +189,7 @@ function CreateGamePage() {
           <SelectInput
             value={awayDh}
             onChange={(event) =>
-              setAwayDh(event.target.value)
+              setAwayDh(event.target.value as YesNoOption)
             }
           >
             <option value="yes">是</option>
@@ -167,7 +204,9 @@ function CreateGamePage() {
           <SelectInput
             value={allowExtraInnings}
             onChange={(event) =>
-              setAllowExtraInnings(event.target.value)
+              setAllowExtraInnings(
+                event.target.value as YesNoOption
+              )
             }
           >
             <option value="yes">是</option>
