@@ -12,12 +12,17 @@ import TextInput from "../components/form/TextInput";
 
 import PageContainer from "../components/layout/PageContainer";
 
+import { validateGameSettings } from "../utils/validateGameSettings";
+
 import type {
+  GameSettings,
   Innings,
   YesNoOption,
 } from "../types/GameSettings";
 
 import { DEFAULT_GAME_SETTINGS } from "../constants/gameSettings";
+
+import { createGame } from "../services/GameService";
 
 function CreateGamePage() {
   const [homeTeam, setHomeTeam] = useState(
@@ -72,22 +77,31 @@ function CreateGamePage() {
   };
 
   const handleCreateGame = () => {
-    if (homeTeam.trim() === "") {
-      alert("請輸入主隊名稱");
+
+
+  const gameSettings: GameSettings = {
+    homeTeam: homeTeam.trim(),
+    awayTeam: awayTeam.trim(),
+    innings,
+    gameTime,
+    mercyRule,
+    homeDh,
+    awayDh,
+    allowExtraInnings,
+  };
+
+  const error = validateGameSettings(gameSettings);
+
+    if (error) {
+      alert(error);
       return;
     }
 
-    if (awayTeam.trim() === "") {
-      alert("請輸入客隊名稱");
-      return;
-    }
+const game = createGame(gameSettings);
 
-    if (homeTeam.trim() === awayTeam.trim()) {
-      alert("主隊與客隊不可相同");
-      return;
-    }
+console.log("Game:", game);
 
-    alert("表單驗證成功");
+alert("比賽建立成功");
   };
 
   return (
