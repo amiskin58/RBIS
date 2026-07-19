@@ -12,4 +12,8 @@ export const INITIAL_LIVE_GAME_STATE: LiveGameState = {
   runnerOnSecond: false,
   runnerOnThird: false,
   events: [],
+  hitLocation: null,
+  hitType: null,
+  fielder: null,
+  hitResult: null,
 };
