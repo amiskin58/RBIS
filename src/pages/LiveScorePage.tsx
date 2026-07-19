@@ -7,6 +7,7 @@ import PageContainer from "../components/layout/PageContainer";
 
 import { getGameById } from "../services/GameService";
 import { INITIAL_LIVE_GAME_STATE } from "../constants/InitialLiveGameState";
+import { recordEvent } from "../services/GameService";
 
 function LiveScorePage() {
   const { gameId } = useParams<{
@@ -220,41 +221,65 @@ const recordRunnerInterference = (
 const handleBall = () => {
   setLiveGame((previous) => {
     if (previous.balls === 3) {
-      return advanceForcedRunners(previous);
+      return recordEvent(
+        advanceForcedRunners(previous),
+        "BALL"
+      );
     }
 
-    return {
+    const newState = {
       ...previous,
       balls: previous.balls + 1,
     };
+
+    return recordEvent(
+      newState,
+      "BALL"
+    );
   });
 };
 
-  const handleStrike = () => {
-    setLiveGame((previous) => {
-      if (previous.strikes === 2) {
-        return recordOut(previous);
-      }
+const handleStrike = () => {
+  setLiveGame((previous) => {
+    if (previous.strikes === 2) {
+      return recordEvent(
+        recordOut(previous),
+        "STRIKE"
+      );
+    }
 
-      return {
-        ...previous,
-        strikes: previous.strikes + 1,
-      };
-    });
-  };
-
-    const handleFoul = () => {
-      setLiveGame((previous) => {
-        if (previous.strikes >= 2) {
-          return previous;
-        }
-
-        return {
-          ...previous,
-          strikes: previous.strikes + 1,
-        };
-      });
+    const newState = {
+      ...previous,
+      strikes: previous.strikes + 1,
     };
+
+    return recordEvent(
+      newState,
+      "STRIKE"
+    );
+  });
+};
+
+const handleFoul = () => {
+  setLiveGame((previous) => {
+    if (previous.strikes >= 2) {
+      return recordEvent(
+        previous,
+        "FOUL"
+      );
+    }
+
+    const newState = {
+      ...previous,
+      strikes: previous.strikes + 1,
+    };
+
+    return recordEvent(
+      newState,
+      "FOUL"
+    );
+  });
+};
 
     const handleOut = () => {
       setLiveGame((previous) =>
@@ -270,11 +295,18 @@ const handleBall = () => {
       }));
     };
 
-    const handleReachFirst = () => {
-      setLiveGame((previous) =>
-        advanceForcedRunners(previous)
-      );
-    };
+const handleReachFirst = (
+  eventType: "HBP" | "WALK"
+) => {
+  setLiveGame((previous) => {
+    const newState = advanceForcedRunners(previous);
+
+    return recordEvent(
+      newState,
+      eventType
+    );
+  });
+};
 
     const handleRunnerInterference = () => {
       setLiveGame((previous) =>
@@ -312,12 +344,9 @@ const handleBall = () => {
             : false,
       }));
     };
-
-    const handleCatcherInterference = () => {
-      setLiveGame((previous) =>
-        advanceForcedRunners(previous)
-      );
-    };   
+      const handleCatcherInterference = () => {
+        handleReachFirst("HBP");
+      };   
 
 
 
@@ -331,12 +360,17 @@ const handleBall = () => {
           return previous;
         }
 
-        return {
+        const newState = {
           ...previous,
           balls: 0,
           strikes: 0,
           runnerOnFirst: true,
         };
+
+        return recordEvent(
+          newState,
+          "DROPPED_THIRD_STRIKE"
+        );
       });
     };
 
@@ -346,15 +380,18 @@ const handleBall = () => {
           return previous;
         }
 
-        return recordOut(previous);
+        const newState = recordOut(previous);
+
+        return recordEvent(
+          newState,
+          "OUT"
+        );
       });
     };
 
     const handleIntentionalWalk = () => {
-      setLiveGame((previous) =>
-        advanceForcedRunners(previous)
-      );
-    };    
+      handleReachFirst("WALK");
+    }; 
 
     const handleNoPitch = () => {
       setLiveGame((previous) => previous);
@@ -386,11 +423,12 @@ const handleBall = () => {
       setLiveGame((previous) => previous);
     };
     const handleHitByPitch = () => {
-      handleReachFirst();
+      handleReachFirst("HBP");
     };
 
+
     const handleWalk = () => {
-      handleReachFirst();
+      handleReachFirst("WALK");
     };
 
     const handleReachSecond = () => {
@@ -426,16 +464,28 @@ const handleBall = () => {
     };
 
     const handleSingle = () => {
-      setLiveGame((previous) =>
-        advanceRunnersOneBase(previous)
-      );
+      setLiveGame((previous) => {
+        const newState =
+          advanceRunnersOneBase(previous);
+
+        return recordEvent(
+          newState,
+          "SINGLE"
+        );
+      });
     };
 
-    const handleError = () => {
-      setLiveGame((previous) =>
-        advanceRunnersOneBase(previous)
-      );
-    };
+const handleError = () => {
+  setLiveGame((previous) => {
+    const newState =
+      advanceRunnersOneBase(previous);
+
+    return recordEvent(
+      newState,
+      "ERROR"
+    );
+  });
+};
 
     const handleFieldersChoice = () => {
       setLiveGame((previous) => {
@@ -451,15 +501,23 @@ const handleBall = () => {
         const stateAfterOut = recordOut(previous);
 
         if (previous.outs === 2) {
-          return stateAfterOut;
+            return recordEvent(
+                stateAfterOut,
+                "FIELDERS_CHOICE"
+            );
         }
 
-        return {
+        const newState = {
           ...stateAfterOut,
           runnerOnFirst: true,
           runnerOnSecond: previous.runnerOnSecond,
           runnerOnThird: previous.runnerOnThird,
         };
+
+        return recordEvent(
+          newState,
+          "FIELDERS_CHOICE"
+        );
       });
     };
 
@@ -473,24 +531,34 @@ const handleBall = () => {
           recordTwoOuts(previous);
 
         if (previous.outs >= 1) {
-          return stateAfterTwoOuts;
+          return recordEvent(
+            stateAfterTwoOuts,
+            "DOUBLE_PLAY"
+          );
         }
 
-        return {
+        const newState = {
           ...stateAfterTwoOuts,
           runnerOnFirst: false,
           runnerOnSecond: previous.runnerOnSecond,
           runnerOnThird: previous.runnerOnThird,
         };
+
+        return recordEvent(
+          newState,
+          "DOUBLE_PLAY"
+        );
       });
     };
 
     const handleSacrificeFly = () => {
       setLiveGame((previous) => {
         const stateAfterOut = recordOut(previous);
-
         if (previous.outs === 2) {
-          return stateAfterOut;
+          return recordEvent(
+            stateAfterOut,
+            "SAC_FLY"
+          );
         }
 
         let awayScore = previous.awayScore;
@@ -504,12 +572,17 @@ const handleBall = () => {
           }
         }
 
-        return {
+        const newState = {
           ...stateAfterOut,
           runnerOnThird: false,
           awayScore,
           homeScore,
         };
+
+          return recordEvent(
+            newState,
+            "SAC_FLY"
+          );
       });
     };
 
@@ -518,40 +591,68 @@ const handleBall = () => {
         const stateAfterOut = recordOut(previous);
 
         if (previous.outs === 2) {
-          return stateAfterOut;
+          return recordEvent(
+            stateAfterOut,
+            "SAC_BUNT"
+          );
         }
 
-        return {
-          ...stateAfterOut,
-          runnerOnFirst: false,
-          runnerOnSecond: previous.runnerOnFirst,
-          runnerOnThird: previous.runnerOnSecond,
-          awayScore:
-            previous.runnerOnThird && previous.isTop
-              ? previous.awayScore + 1
-              : previous.awayScore,
-          homeScore:
-            previous.runnerOnThird && !previous.isTop
-              ? previous.homeScore + 1
-              : previous.homeScore,
-        };
-      });
+      const newState = {
+        ...stateAfterOut,
+        runnerOnFirst: false,
+        runnerOnSecond: previous.runnerOnFirst,
+        runnerOnThird: previous.runnerOnSecond,
+        awayScore:
+          previous.runnerOnThird && previous.isTop
+            ? previous.awayScore + 1
+            : previous.awayScore,
+        homeScore:
+          previous.runnerOnThird && !previous.isTop
+            ? previous.homeScore + 1
+            : previous.homeScore,
+      };
+
+      return recordEvent(
+        newState,
+        "SAC_BUNT"
+      );
+            });
     };
 
     const handleWildPitch = () => {
-      setLiveGame((previous) =>
-        advanceAllRunnersOneBase(previous)
-      );
+      setLiveGame((previous) => {
+        const newState =
+          advanceAllRunnersOneBase(previous);
+
+        return recordEvent(
+          newState,
+          "WILD_PITCH"
+        );
+      });
     };
 
     const handlePassedBall = () => {
-      handleWildPitch();
+      setLiveGame((previous) => {
+        const newState =
+          advanceAllRunnersOneBase(previous);
+
+        return recordEvent(
+          newState,
+          "PASSED_BALL"
+        );
+      });
     };
 
     const handleBalk = () => {
-      setLiveGame((previous) =>
-        advanceAllRunnersOneBase(previous)
-      );
+      setLiveGame((previous) => {
+        const newState =
+          advanceAllRunnersOneBase(previous);
+
+        return recordEvent(
+          newState,
+          "BALK"
+        );
+      });
     };
 
     const handleStealSecond = () => {
@@ -634,7 +735,7 @@ const handleBall = () => {
           if (previous.isTop) {
             awayScore += 1;
           } else {
-            homeScore += 1;handlePassedBall
+            homeScore += 1;
           }
         };
 
@@ -646,16 +747,21 @@ const handleBall = () => {
           scoreRun();
         }
 
-        return {
-          ...previous,
-          balls: 0,
-          strikes: 0,
-          runnerOnFirst: false,
-          runnerOnSecond: true,
-          runnerOnThird: previous.runnerOnFirst,
-          awayScore,
-          homeScore,
-        };
+          const newState = {
+            ...previous,
+            balls: 0,
+            strikes: 0,
+            runnerOnFirst: false,
+            runnerOnSecond: true,
+            runnerOnThird: previous.runnerOnFirst,
+            awayScore,
+            homeScore,
+          };
+
+          return recordEvent(
+            newState,
+            "DOUBLE"
+          );
       });
     };
 
@@ -684,16 +790,21 @@ const handleBall = () => {
           scoreRun();
         }
 
-        return {
-          ...previous,
-          balls: 0,
-          strikes: 0,
-          runnerOnFirst: false,
-          runnerOnSecond: false,
-          runnerOnThird: true,
-          awayScore,
-          homeScore,
-        };
+          const newState = {
+            ...previous,
+            balls: 0,
+            strikes: 0,
+            runnerOnFirst: false,
+            runnerOnSecond: false,
+            runnerOnThird: true,
+            awayScore,
+            homeScore,
+          };
+
+          return recordEvent(
+            newState,
+            "TRIPLE"
+          );
       });
     };
 
@@ -739,20 +850,25 @@ const handleBall = () => {
           Number(previous.runnerOnSecond) +
           Number(previous.runnerOnThird);
 
-        return {
-          ...previous,
-          balls: 0,
-          strikes: 0,
-          runnerOnFirst: false,
-          runnerOnSecond: false,
-          runnerOnThird: false,
-          awayScore: previous.isTop
-            ? previous.awayScore + runsScored
-            : previous.awayScore,
-          homeScore: previous.isTop
-            ? previous.homeScore
-            : previous.homeScore + runsScored,
-        };
+          const newState = {
+            ...previous,
+            balls: 0,
+            strikes: 0,
+            runnerOnFirst: false,
+            runnerOnSecond: false,
+            runnerOnThird: false,
+            awayScore: previous.isTop
+              ? previous.awayScore + runsScored
+              : previous.awayScore,
+            homeScore: previous.isTop
+              ? previous.homeScore
+              : previous.homeScore + runsScored,
+          };
+
+          return recordEvent(
+            newState,
+            "HOME_RUN"
+          );
       });
     };
 
@@ -939,7 +1055,7 @@ const handleScore = () => {
 
         <button
           type="button"
-          onClick={handleReachFirst}
+          onClick={() => handleReachFirst("WALK")}
         >
           Reach First
         </button>

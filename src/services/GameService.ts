@@ -77,19 +77,15 @@ export const getGameById = (
   );
 };
 
+
 export function recordEvent(
   state: LiveGameState,
   type: GameEventType
 ): LiveGameState {
+  const event = createGameEvent(type, state);
+
   return {
     ...state,
-    events: [
-      ...state.events,
-      createGameEvent(
-        type,
-        state.inning,
-        state.isTop
-      ),
-    ],
+    events: [...state.events, event],
   };
 }

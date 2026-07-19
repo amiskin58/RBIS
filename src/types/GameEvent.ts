@@ -1,3 +1,5 @@
+import type { LiveGameState } from "./LiveGameState";
+
 export type GameEventType =
   | "BALL"
   | "STRIKE"
@@ -61,18 +63,31 @@ export interface GameEvent {
   runnerOnThird: boolean;
 
   createdAt: number;
-} 
+}
 
 export function createGameEvent(
   type: GameEventType,
-  inning: number,
-  isTop: boolean
+  state: LiveGameState
 ): GameEvent {
   return {
     id: crypto.randomUUID(),
+
     type,
-    inning,
-    isTop,
-    timestamp: Date.now(),
+
+    inning: state.inning,
+    isTop: state.isTop,
+
+    balls: state.balls,
+    strikes: state.strikes,
+    outs: state.outs,
+
+    awayScore: state.awayScore,
+    homeScore: state.homeScore,
+
+    runnerOnFirst: state.runnerOnFirst,
+    runnerOnSecond: state.runnerOnSecond,
+    runnerOnThird: state.runnerOnThird,
+
+    createdAt: Date.now(),
   };
 }
