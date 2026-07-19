@@ -11,4 +11,5 @@ export const INITIAL_LIVE_GAME_STATE: LiveGameState = {
   runnerOnFirst: false,
   runnerOnSecond: false,
   runnerOnThird: false,
+  events: [],
 };

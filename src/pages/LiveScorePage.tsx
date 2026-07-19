@@ -313,6 +313,78 @@ const handleBall = () => {
       }));
     };
 
+    const handleCatcherInterference = () => {
+      setLiveGame((previous) =>
+        advanceForcedRunners(previous)
+      );
+    };   
+
+
+
+    const handleDroppedThirdStrike = () => {
+      setLiveGame((previous) => {
+        const canAdvance =
+          previous.strikes === 2 &&
+          (!previous.runnerOnFirst || previous.outs === 2);
+
+        if (!canAdvance) {
+          return previous;
+        }
+
+        return {
+          ...previous,
+          balls: 0,
+          strikes: 0,
+          runnerOnFirst: true,
+        };
+      });
+    };
+
+    const handleDroppedThirdStrikeOut = () => {
+      setLiveGame((previous) => {
+        if (previous.strikes !== 2) {
+          return previous;
+        }
+
+        return recordOut(previous);
+      });
+    };
+
+    const handleIntentionalWalk = () => {
+      setLiveGame((previous) =>
+        advanceForcedRunners(previous)
+      );
+    };    
+
+    const handleNoPitch = () => {
+      setLiveGame((previous) => previous);
+    };
+
+    const handleDeadBall = () => {
+      setLiveGame((previous) => previous);
+    };
+
+    const handleTimeout = () => {
+      setLiveGame((previous) => previous);
+    };
+
+
+
+    const handleGameDelay = () => {
+      setLiveGame((previous) => previous);
+    };
+
+    const handleGameResumed = () => {
+      setLiveGame((previous) => previous);
+    };
+
+    const handleRainDelay = () => {
+      setLiveGame((previous) => previous);
+    };
+
+    const handleSuspendedGame = () => {
+      setLiveGame((previous) => previous);
+    };
     const handleHitByPitch = () => {
       handleReachFirst();
     };
@@ -804,6 +876,55 @@ const handleScore = () => {
 
         <button
           type="button"
+          onClick={handleNoPitch}
+        >
+          No Pitch
+        </button>
+
+        <button
+          type="button"
+          onClick={handleDeadBall}
+        >
+          Dead Ball
+        </button>
+
+        <button
+          type="button"
+          onClick={handleTimeout}
+        >
+          Timeout
+        </button>
+
+        <button
+          type="button"
+          onClick={handleGameDelay}
+        >
+          Game Delay
+        </button>
+
+        <button
+          type="button"
+          onClick={handleGameResumed}
+        >
+          Game Resumed
+        </button>
+
+        <button
+          type="button"
+          onClick={handleRainDelay}
+        >
+          Rain Delay
+        </button>
+        
+        <button
+          type="button"
+          onClick={handleSuspendedGame}
+        >
+          Suspended Game
+        </button>
+
+        <button
+          type="button"
           onClick={handleOut}
         >
           Out
@@ -828,6 +949,13 @@ const handleScore = () => {
           onClick={handleHitByPitch}
         >
           Hit By Pitch
+        </button>
+
+        <button
+          type="button"
+          onClick={handleIntentionalWalk}
+        >
+          Intentional Walk
         </button>
 
         <button
@@ -947,6 +1075,27 @@ const handleScore = () => {
           onClick={handleDefensiveIndifference}
         >
           Defensive Indifference
+        </button>
+
+        <button
+          type="button"
+          onClick={handleCatcherInterference}
+        >
+          Catcher Interference
+        </button>
+
+        <button
+          type="button"
+          onClick={handleDroppedThirdStrike}
+        >
+          Dropped Third Strike
+        </button>
+
+        <button
+          type="button"
+          onClick={handleDroppedThirdStrikeOut}
+        >
+          Dropped Third Strike Out
         </button>
 
         <button

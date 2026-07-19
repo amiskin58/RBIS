@@ -1,5 +1,8 @@
 import type { Game } from "../types/Game";
 import type { GameSettings } from "../types/GameSettings";
+import { createGameEvent } from "../types/GameEvent";
+import type { GameEventType } from "../types/GameEvent";
+import type { LiveGameState } from "../types/LiveGameState";
 
 const GAME_STORAGE_KEY = "rbis-games";
 
@@ -73,3 +76,20 @@ export const getGameById = (
     (game) => game.id === gameId
   );
 };
+
+export function recordEvent(
+  state: LiveGameState,
+  type: GameEventType
+): LiveGameState {
+  return {
+    ...state,
+    events: [
+      ...state.events,
+      createGameEvent(
+        type,
+        state.inning,
+        state.isTop
+      ),
+    ],
+  };
+}
