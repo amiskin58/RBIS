@@ -14,6 +14,50 @@ function LiveScorePage() {
     gameId: string;
   }>();
 
+  const getEventText = (type: string) => {
+  switch (type) {
+    case "BALL":
+      return "壞球";
+    case "STRIKE":
+      return "好球";
+    case "FOUL":
+      return "界外球";
+    case "OUT":
+      return "出局";
+    case "WALK":
+      return "四壞保送";
+    case "HBP":
+      return "觸身球";
+    case "SINGLE":
+      return "一壘安打";
+    case "DOUBLE":
+      return "二壘安打";
+    case "TRIPLE":
+      return "三壘安打";
+    case "HOME_RUN":
+      return "全壘打";
+    case "ERROR":
+      return "失誤";
+    case "FIELDERS_CHOICE":
+      return "野手選擇";
+    case "DOUBLE_PLAY":
+      return "雙殺";
+    case "SAC_FLY":
+      return "高飛犧牲打";
+    case "SAC_BUNT":
+      return "犧牲短打";
+    case "WILD_PITCH":
+      return "暴投";
+    case "PASSED_BALL":
+      return "捕逸";
+    case "BALK":
+      return "投手犯規";
+    case "DROPPED_THIRD_STRIKE":
+      return "不死三振";
+    default:
+      return type;
+  }
+};
   const game = gameId
     ? getGameById(gameId)
     : undefined;
@@ -823,6 +867,13 @@ const handleError = () => {
       });
     };
 
+    const handleClearEvents = () => {
+      setLiveGame((previous) => ({
+        ...previous,
+        events: [],
+        lastEventId: 0,
+      }));
+    };
     const handlePickoffFirst = () => {
       setLiveGame((previous) =>
         recordPickoff(previous, "first")
@@ -1307,6 +1358,14 @@ const handleScore = () => {
 
         <button
           type="button"
+          onClick={handleClearEvents}
+          disabled={liveGame.events.length === 0}
+        >
+          Clear Events
+        </button>
+
+        <button
+          type="button"
           onClick={handleHomeRun}
         >
           Home Run
@@ -1332,6 +1391,38 @@ const handleScore = () => {
         >
           Score
         </button>
+
+        <h3>比賽紀錄</h3>
+        <div>
+          共 {liveGame.events.length} 筆事件
+        </div>
+        {liveGame.events.length === 0 ? (
+          <div>尚無紀錄</div>
+        ) : (
+            <ul
+              style={{
+                maxHeight: "300px",
+                overflowY: "auto",
+                border: "1px solid #ccc",
+                padding: "10px",
+                marginTop: "10px",
+              }}
+            >
+            {liveGame.events
+              .slice(-10)
+              .reverse()
+              .map((event, index) => (
+              <li key={event.id}>
+                #{liveGame.events.length - index}
+                {" "}
+                第 {event.inning} 局
+                {event.isTop ? "上" : "下"}
+                │
+                {getEventText(event.type)}
+              </li>
+              ))}
+          </ul>
+        )}
 
         <div>
           比賽 ID：{game.id}
